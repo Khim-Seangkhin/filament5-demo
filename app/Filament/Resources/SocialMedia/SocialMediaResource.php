@@ -1,44 +1,39 @@
 <?php
 
-namespace App\Filament\Resources\Categories;
+namespace App\Filament\Resources\SocialMedia;
 
-use App\Filament\Resources\Categories\Pages\ManageCategories;
-use App\Models\Category;
+use App\Filament\Resources\SocialMedia\Pages\ManageSocialMedia;
+use App\Models\SocialMedia;
 use BackedEnum;
-use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class CategoryResource extends Resource
+class SocialMediaResource extends Resource
 {
-    protected static ?string $model = Category::class;
+    protected static ?string $model = SocialMedia::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::FolderOpen;
-    protected static string | UnitEnum | null $navigationGroup = 'News';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::GlobeAlt;
+    protected static string | UnitEnum | null $navigationGroup = 'Settings';
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->maxLength(255)
+                TextInput::make('platform')
                     ->required(),
-                TextInput::make('slug')
-                    ->maxLength(255)
+                TextInput::make('icon'),
+                TextInput::make('url')
+                    ->url()
                     ->required(),
-                Toggle::make('status')
-                    ->default(true),
             ]);
     }
 
@@ -46,13 +41,12 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('platform')
                     ->searchable(),
-                TextColumn::make('slug')
+                TextColumn::make('icon')
                     ->searchable(),
-                // ImageColumn::make('image'),
-                IconColumn::make('status')
-                    ->boolean(),
+                TextColumn::make('url')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -66,10 +60,8 @@ class CategoryResource extends Resource
                 //
             ])
             ->recordActions([
-                ActionGroup::make([
-                    EditAction::make(),
-                    DeleteAction::make(),
-                ])
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -81,7 +73,7 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ManageCategories::route('/'),
+            'index' => ManageSocialMedia::route('/'),
         ];
     }
 }

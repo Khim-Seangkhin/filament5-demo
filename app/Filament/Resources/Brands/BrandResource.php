@@ -1,31 +1,30 @@
 <?php
 
-namespace App\Filament\Resources\Categories;
+namespace App\Filament\Resources\Brands;
 
-use App\Filament\Resources\Categories\Pages\ManageCategories;
-use App\Models\Category;
+use App\Filament\Resources\Brands\Pages\ManageBrands;
+use App\Models\Brand;
 use BackedEnum;
-use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
 
-class CategoryResource extends Resource
+class BrandResource extends Resource
 {
-    protected static ?string $model = Category::class;
+    protected static ?string $model = Brand::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::FolderOpen;
-    protected static string | UnitEnum | null $navigationGroup = 'News';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Tag;
+    protected static string | UnitEnum | null $navigationGroup = 'Settings';
 
     public static function form(Schema $schema): Schema
     {
@@ -34,11 +33,17 @@ class CategoryResource extends Resource
                 TextInput::make('name')
                     ->maxLength(255)
                     ->required(),
-                TextInput::make('slug')
-                    ->maxLength(255)
+                FileUpload::make('logo')
+                    ->image()
+                    ->directory('brand')
                     ->required(),
-                Toggle::make('status')
-                    ->default(true),
+                TextInput::make('url')
+                    ->url()
+                    ->nullable(),
+                TextInput::make('order')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
             ]);
     }
 
@@ -48,11 +53,14 @@ class CategoryResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('slug')
+                
+                TextColumn::make('url')
                     ->searchable(),
-                // ImageColumn::make('image'),
-                IconColumn::make('status')
-                    ->boolean(),
+                TextColumn::make('order')
+                    ->numeric()
+                    ->sortable(),
+                ImageColumn::make('logo')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -66,10 +74,8 @@ class CategoryResource extends Resource
                 //
             ])
             ->recordActions([
-                ActionGroup::make([
-                    EditAction::make(),
-                    DeleteAction::make(),
-                ])
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -81,7 +87,7 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ManageCategories::route('/'),
+            'index' => ManageBrands::route('/'),
         ];
     }
 }

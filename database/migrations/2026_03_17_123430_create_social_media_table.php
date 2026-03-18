@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->boolean('status')->default(true);
+        Schema::create('social_media', function (Blueprint $table) {
+             $table->id();
+            $table->string('platform'); // facebook, instagram...
+            $table->string('icon')->nullable(); // icon class or image
+            $table->string('url');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('social_media');
     }
 };
