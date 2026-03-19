@@ -29,9 +29,12 @@ class SocialMediaResource extends Resource
         return $schema
             ->components([
                 TextInput::make('platform')
+                    ->maxLength(255)
                     ->required(),
-                TextInput::make('icon'),
+                TextInput::make('icon')
+                    ->maxLength(255),
                 TextInput::make('url')
+                    ->maxLength(255)
                     ->url()
                     ->required(),
             ]);
@@ -44,9 +47,9 @@ class SocialMediaResource extends Resource
                 TextColumn::make('platform')
                     ->searchable(),
                 TextColumn::make('icon')
-                    ->searchable(),
+                    ->limit(30),
                 TextColumn::make('url')
-                    ->searchable(),
+                    ->limit(30),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

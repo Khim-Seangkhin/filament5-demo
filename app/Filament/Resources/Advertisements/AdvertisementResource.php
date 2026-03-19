@@ -33,6 +33,11 @@ class AdvertisementResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Megaphone;
     protected static string | UnitEnum | null $navigationGroup = 'News';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -75,15 +80,16 @@ class AdvertisementResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->limit(30)
                     ->searchable(),
                 ImageColumn::make('photo'),
                 TextColumn::make('url')
                     ->limit(30),
                 TextColumn::make('position'),
                 TextColumn::make('start_date')
-                    ->dateTime(),
+                    ->date(),
                 TextColumn::make('end_date')
-                    ->dateTime(),
+                    ->date(),
                 TextColumn::make('priority'),
                 TextColumn::make('views')
                     ->numeric(),

@@ -53,8 +53,8 @@ class BrandResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                
                 TextColumn::make('url')
+                    ->limit(30)
                     ->searchable(),
                 TextColumn::make('order')
                     ->numeric()

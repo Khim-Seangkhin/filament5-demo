@@ -32,6 +32,11 @@ class UserResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Users;
     protected static string | UnitEnum | null $navigationGroup = 'News';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -60,11 +65,12 @@ class UserResource extends Resource
                             ->visibleOn('create'),
                         Select::make('role')
                             ->options([
-                                'admin' => 'Admin',
-                                'user' => 'User',
-                                'others' => 'Others',
+                                'ADMIN' => 'ADMIN',
+                                'USER' => 'USER',
+                                'EDITOR' => 'EDITOR',
+                                'GUEST' => 'GUEST',
                             ])
-                            ->default('user'),
+                            ->default('USER'),
                     ])->columnSpan(2),
                 Section::make()
                     ->schema([
@@ -88,9 +94,20 @@ class UserResource extends Resource
                 TextInputColumn::make('email')
                     ->rules(['required', 'max:255']),
                 TextColumn::make('phone')
+                    ->default('--')
                     ->searchable(),
-                ImageColumn::make('avatar')->imageHeight(30)->circular(),
+                ImageColumn::make('avatar')
+                    ->default(asset('img/default-user.jpg'))
+                    ->imageHeight(40)
+                    ->circular(),
                 TextColumn::make('role')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'ADMIN' => 'danger',
+                        'EDITOR' => 'primary',
+                        'USER' => 'success',
+                        default => 'secondary',
+                    })
                     ->searchable(),
                 IconColumn::make('status')
                     ->boolean(),

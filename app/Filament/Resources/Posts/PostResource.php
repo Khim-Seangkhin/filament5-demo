@@ -35,6 +35,11 @@ class PostResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentText;
     protected static string | UnitEnum | null $navigationGroup = 'News';
 
+        public static function getNavigationBadge(): ?string
+        {
+            return static::getModel()::count();
+        }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
