@@ -41,6 +41,7 @@ class CategoryResource extends Resource
                     ->required(),
                 TextInput::make('slug')
                     ->maxLength(255)
+                    ->unique()
                     ->required(),
                 Toggle::make('status')
                     ->default(true),
